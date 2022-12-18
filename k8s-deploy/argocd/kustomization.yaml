@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+resources:
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.12/manifests/install.yaml
+  - self-manage-app.yaml       # GitOps self-management of this directory
+  - dev-cluster.yaml           # Dev cluster object
+  - kube-prometheus-stack.yaml # observability stack
+  - api-example-app.yaml       # our test application
+  - grafana-dashboards.yaml    # grafana dashboards
+
+

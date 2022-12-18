@@ -1,0 +1,100 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: "default"
+  source:
+    repoURL: https://prometheus-community.github.io/helm-charts
+    chart: kube-prometheus-stack
+    targetRevision: '40.1.0'
+    helm:
+      releaseName: kube-prometheus-stack
+      skipCrds: true
+      values: |
+        prometheus:
+          prometheusSpec:
+            additionalScrapeConfigs:
+              - job_name: kubernetes-service-endpoints
+                kubernetes_sd_configs:
+                  - role: service
+                relabel_configs:
+                  
+                  # annotation 'prometheus.io/scrape' must be set to 'true'
+                  - action: keep
+                    regex: true
+                    source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scrape ]
+                  
+                  # service cannot be in kube-system or observe namespaces
+                  - action: drop
+                    regex: (kube-system|observe)
+                    source_labels: [ __meta_kubernetes_namespace ]
+                  
+                  # allow override of http scheme
+                  - action: replace
+                    regex: (https?)
+                    source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scheme ]
+                    target_label: __scheme__
+                  
+                  # allow override of default /metrics path
+                  - action: replace
+                    regex: (.+)
+                    source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_path ]
+                    target_label: __metrics_path__
+                  
+                  # allow override of default port
+                  - action: replace
+                    regex: ([^:]+)(?::\d+)?;(\d+)
+                    replacement: $1:$2
+                    source_labels: [ __address__, __meta_kubernetes_service_annotation_prometheus_io_port ]
+                    target_label: __address__
+                  - { action: labelmap, regex: __meta_kubernetes_service_label_(.+) }
+                  - action: replace
+                    source_labels: [ __meta_kubernetes_namespace ]
+                    target_label: kubernetes_namespace
+                  - action: replace
+                    source_labels: [ __meta_kubernetes_service_name ]
+                    target_label: kubernetes_name
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observe
+  syncPolicy:
+    automated:
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+      - ApplyOutOfSyncOnly=true
+  ignoreDifferences:
+    - group: apps
+      kind: "*"
+      jsonPointers:
+        - /spec/replicas
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack-crds
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observe
+  project: default
+  source:
+    repoURL: https://github.com/prometheus-community/helm-charts.git
+    path: charts/kube-prometheus-stack/crds/
+    targetRevision: kube-prometheus-stack-40.1.0
+    directory:
+      recurse: true
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - Replace=true
+    automated:
+      prune: true
+      selfHeal: true

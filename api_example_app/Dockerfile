@@ -6,7 +6,6 @@ RUN pip install -r requirements.txt && chmod +x /app/app.py
 RUN black --check app.py
 RUN pylint --fail-under 5 app.py
 EXPOSE 8080
-#ENTRYPOINT [ "/app/app.py" ]
 
 FROM gcr.io/distroless/python3-debian11
 COPY --from=build-env /app /app

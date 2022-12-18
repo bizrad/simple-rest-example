@@ -1,0 +1,27 @@
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  labels:
+    app.kubernetes.io/part-of: api-example-app
+  name: api-example-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: api-example-app
+  minReplicas: 1
+  maxReplicas: 1 # change if backing database added
+  metrics:
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          averageUtilization: 70
+          type: Utilization
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          averageUtilization: 70
+          type: Utilization

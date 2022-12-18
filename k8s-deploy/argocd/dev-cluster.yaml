@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: dev-cluster
+  annotations:
+    managed-by: argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+data:
+  # name: dev-cluster
+  name: ZGV2LWNsdXN0ZXIK
+  # server: https://kubernetes.default.svc
+  server: aHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3Zj
+  # config: '{"tlsClientConfig":{"insecure":false}}'
+  config: eyJ0bHNDbGllbnRDb25maWciOnsiaW5zZWN1cmUiOmZhbHNlfX0=
+

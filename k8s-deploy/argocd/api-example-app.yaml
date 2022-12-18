@@ -1,0 +1,31 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: api-example-app
+spec:
+  project: default
+  source:
+    repoURL: https://github.com:bizrad/simple-rest-example.git
+    path: k8s-deploy/api_example_app
+    targetRevision: HEAD
+    kustomize:
+      images:
+        - api-example-app-image=registry.gitlab.com/brad.johnson/k8s-api-example-app@sha256:61b8318bca70b565fdb3d2b8c76b6ef1f4d97c54880af8c7023a67b756f7622c
+  destination:
+    namespace: api-example
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+      - CreateNamespace=true
+  ignoreDifferences:
+  # Ignore any changes by the autoscaler
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+      - /spec/replicas

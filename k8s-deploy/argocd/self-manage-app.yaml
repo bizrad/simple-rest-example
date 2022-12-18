@@ -1,0 +1,42 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com:bizrad/simple-rest-example.git
+    path: k8s-deploy/argocd
+    targetRevision: HEAD
+  destination:
+    namespace: argocd
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ApplyOutOfSyncOnly=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+  # Ignore any changes by the autoscaler
+  - group: apps
+    kind: Deployment
+    name: argocd-repo-server
+    namespace: argocd
+    jsonPointers:
+      - /spec/replicas
+  - group: apps
+    kind: Deployment
+    name: argocd-server
+    namespace: argocd
+    jsonPointers:
+      - /spec/replicas
+  # allow manual changes to sync policy via UI for debugging
+  - group: argoproj.io/v1alpha1
+    kind: Application
+    namespace: argocd
+    jsonPointers:
+      - /spec/syncPolicy

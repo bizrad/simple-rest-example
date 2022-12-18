@@ -1,4 +1,5 @@
 data "external" "git" {
+  // This feels a bit backwards, but there's no CI/CD here
   program = [
     "git",
     "log",
@@ -13,7 +14,7 @@ resource "docker_image" "api-example-app" {
 
   build {
     path = "./api_example_app"
-    tag  = ["api_example_app:${data.external.git.result.sha}"]
+    tag  = ["api-example-app:${data.external.git.result.sha}"]
   }
 }
 
@@ -23,8 +24,9 @@ resource "docker_network" "test" {
 }
 
 resource "docker_container" "api-example-app" {
-  name  = "api-example-app"
-  image = "api_example_app:${data.external.git.result.sha}"
+  depends_on = [docker_network.test, docker_image.api-example-app]
+  name       = "api-example-app"
+  image      = "api-example-app:${data.external.git.result.sha}"
 
   networks_advanced {
     name = docker_network.test.name
@@ -37,4 +39,6 @@ resource "docker_container" "api-example-app" {
 
 }
 
-
+output "api-example-app-docker-image" {
+  value = "${docker_image.api-example-app.name}:${data.external.git.result.sha}@${docker_image.api-example-app.image_id}"
+}
