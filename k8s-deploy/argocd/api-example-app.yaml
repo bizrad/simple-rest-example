@@ -11,7 +11,7 @@ spec:
     targetRevision: HEAD
     kustomize:
       images:
-        - api-example-app-image=registry.gitlab.com/brad.johnson/k8s-api-example-app@sha256:61b8318bca70b565fdb3d2b8c76b6ef1f4d97c54880af8c7023a67b756f7622c
+        - api-example-app-image=bizrad/api-example-app:4a31714f3fa085267c602d2d678869e355a182de
   destination:
     namespace: api-example
     server: https://kubernetes.default.svc
