@@ -54,7 +54,8 @@ Let's add a k8s deployment with prometheus monitoring and deploy with ArgoCD
 
 ### Minikube setup
 ```shell
-$ minikube delete && minikube start --kubernetes-version=v1.24.0 --memory=1900M --bootstrapper=kubeadm --extra-config=kubelet.authentication-token-webhook=true --extra-config=kubelet.authorization-mode=Webhook --extra-config=scheduler.bind-address=0.0.0.0 --extra-config=controller-manager.bind-address=0.0.0.0
+# set memory to be within the resources set for docker daemon
+$ minikube delete && minikube start --kubernetes-version=v1.24.0 --memory=5900M --bootstrapper=kubeadm --extra-config=kubelet.authentication-token-webhook=true --extra-config=kubelet.authorization-mode=Webhook --extra-config=scheduler.bind-address=0.0.0.0 --extra-config=controller-manager.bind-address=0.0.0.0
 
 ```
 
@@ -92,7 +93,7 @@ http://localhost:8081
 
 ### Connect to example app and inspect endpoints
 ```shell
-kubectl port-forward -n api-example-test service/api-example 8080:80
+kubectl port-forward -n api-example service/api-example 8080:80
 curl localhost:8080
 curl localhost:8080/stats
 curl localhost:8080/metrics
@@ -102,6 +103,8 @@ curl -X POST -H 'Authorization: Bearer xxxxxxxx' -d '{"cidr":"172.10.10.0/24","t
 ```
 
 ### See dashboard for example app
+![Example Dashboard](https://github.com/bizrad/simple-rest-example/blob/main/Example-Dashboard.png?raw=true)
+
 ```shell
 kubectl port-forward -n observe service/kube-prometheus-stack-grafana 8082:80
 ```

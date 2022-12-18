@@ -11,5 +11,3 @@ resources:
   - kube-prometheus-stack.yaml # observability stack
   - api-example-app.yaml       # our test application
   - grafana-dashboards.yaml    # grafana dashboards
-
-
