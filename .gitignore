@@ -4,9 +4,6 @@ __pycache__
 *.py[cod]
 *$py.class
 
-# Python Virtual Environments
-api_example_app_venv
-
 # Local .terraform directories
 **/.terraform/*
 

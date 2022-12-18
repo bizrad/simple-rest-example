@@ -10,10 +10,10 @@ data "external" "git" {
 }
 
 resource "docker_image" "api-example-app" {
-  name = "api_example_app"
+  name = "api-example-app"
 
   build {
-    path = "./api_example_app"
+    path = "./api-example-app"
     tag  = ["api-example-app:${data.external.git.result.sha}"]
   }
 }

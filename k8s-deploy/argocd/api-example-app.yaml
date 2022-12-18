@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com:bizrad/simple-rest-example.git
-    path: k8s-deploy/api_example_app
+    path: k8s-deploy/api-example-app
     targetRevision: HEAD
     kustomize:
       images:
