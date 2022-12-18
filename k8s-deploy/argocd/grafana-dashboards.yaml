@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com:bizrad/simple-rest-example.git
+    repoURL: https://github.com/bizrad/simple-rest-example.git
     path: k8s-deploy/grafana_dashboards
     targetRevision: HEAD
   destination:

@@ -49,7 +49,8 @@ Let's add a k8s deployment with prometheus monitoring and deploy with ArgoCD
 
 ### Additional Requirements
 * A fresh development kubernetes cluster of some type, like [minikube](https://minikube.sigs.k8s.io/docs/start/)
-* kubectl
+* [kubectl](https://kubernetes.io/docs/tasks/tools/)
+* [kustomize](https://kubectl.docs.kubernetes.io/installation/kustomize/) 
 
 ### Minikube setup
 ```shell

@@ -5,7 +5,7 @@ kind: Kustomization
 namespace: argocd
 
 resources:
-  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.4.12/manifests/install.yaml
+  - https://raw.githubusercontent.com/argoproj/argo-cd/v2.5.4/manifests/install.yaml
   - self-manage-app.yaml       # GitOps self-management of this directory
   - dev-cluster.yaml           # Dev cluster object
   - kube-prometheus-stack.yaml # observability stack
